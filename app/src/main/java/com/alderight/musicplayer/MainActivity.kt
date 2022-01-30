@@ -3,11 +3,16 @@ package com.alderight.musicplayer
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.ImageButton
 import android.widget.SeekBar
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var runnable: Runnable
+    private var handler = Handler()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,11 +47,23 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             override fun onStartTrackingTouch(p0: SeekBar?) {
-                TODO("Not yet implemented")
+
             }
             override fun onStopTrackingTouch(p0: SeekBar?) {
-                TODO("Not yet implemented")
+
             }
         })
+
+        runnable = Runnable {
+            seekbar.progress = mediaplayer.currentPosition
+            handler.postDelayed(runnable, 1000)
+        }
+
+        handler.postDelayed(runnable, 1000)
+        // now we want that when the music finish to play the seekbar back from 0 and change image
+        mediaplayer.setOnCompletionListener {
+            play_btn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+            seekbar.progress = 0
+        }
     }
 }
